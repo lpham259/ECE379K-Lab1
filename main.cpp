@@ -3,17 +3,22 @@
 #include <vector>
 #include "bounded_queue.hpp"
 
+std::mutex cout_mutex;
+
 void producer(BoundedQueue<int>& queue, int id, int items) {
     for(int i = 0; i < items; ++i) {
         queue.push(id * 1000 + i);
-        std::cout << "Producer" << id << "pushed: " << (id * 1000 + i) << "\n";
+
+        std::lock_guard<std::mutex> lock(cout_mutex);
+        std::cout << "Producer " << id << " pushed: " << (id * 1000 + i) << "\n";
     }
 }
 
 void consumer(BoundedQueue<int>& queue, int id) {
     int item;
     while(queue.pop(item)) {
-        std::cout << "Consumer" << id << " popped: " << item << "\n";
+        std::lock_guard<std::mutex> lock(cout_mutex);
+        std::cout << "Consumer " << id << " popped: " << item << "\n";
     }
 }
 
@@ -39,7 +44,7 @@ int main() {
     queue.close();
     threads[2].join();
     threads[3].join();
-    threads[3].join();
+    threads[4].join();
 
     return 0;
 }

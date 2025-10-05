@@ -29,7 +29,7 @@ bool BoundedQueue<T>::pop(T& item) {
         not_empty.wait(lock);
     }
 
-    if buffer(.empty()) {
+    if (buffer.empty()) {
         return false;
     }
 
