@@ -1,4 +1,5 @@
 #include "bounded_queue.hpp"
+#include <stdexcept>
 
 template <typename T>
 BoundedQueue<T>::BoundedQueue(size_t cap) : capacity(cap) {}
@@ -6,16 +7,12 @@ BoundedQueue<T>::BoundedQueue(size_t cap) : capacity(cap) {}
 template <typename T>
 void BoundedQueue<T>::push(const T& item) {
     std::unique_lock<std::mutex> lock(mtx);
-
-    // Wait while buffer is full and not closed
     while(buffer.size() == capacity && !closed) {
         not_full.wait(lock);
     }
-
     if(closed) {
         throw std::runtime_error("Queue is closed");
     }
-
     buffer.push(item);
     not_empty.notify_one();
 }
@@ -23,16 +20,12 @@ void BoundedQueue<T>::push(const T& item) {
 template <typename T>
 bool BoundedQueue<T>::pop(T& item) {
     std::unique_lock<std::mutex> lock(mtx);
-
-    // Wait while buffer is empty and not closed
     while(buffer.empty() && !closed) {
         not_empty.wait(lock);
     }
-
-    if (buffer.empty()) {
+    if(buffer.empty()) {
         return false;
     }
-
     item = buffer.front();
     buffer.pop();
     not_full.notify_one();
@@ -46,3 +39,5 @@ void BoundedQueue<T>::close() {
     not_full.notify_all();
     not_empty.notify_all();
 }
+
+template class BoundedQueue<int>;

@@ -17,11 +17,9 @@ private:
 
 public:
     explicit BoundedQueue(size_t cap);
-
     void push(const T& item);
     bool pop(T& item);
     void close();
 };
 
-#include "bounded_queue.cpp"
 #endif
