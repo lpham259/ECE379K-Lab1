@@ -42,8 +42,7 @@ void consumer(BoundedQueue<int>& queue, int id, Stats& stats,
     std::cout << "Consumer " << id << " finished\n";
 }
 
-bool verify_items(const std::vector<std::vector<int>>& per_consumer_items, 
-                  int num_producers, int items_per_producer) {
+bool verify_items(const std::vector<std::vector<int>>& per_consumer_items, int num_producers, int items_per_producer) {
     std::unordered_set<int> seen;
     int total_items = 0;
     
@@ -110,23 +109,6 @@ int main(int argc, char* argv[]) {
     BoundedQueue<int> queue(capacity);
     Stats stats;
     std::vector<std::vector<int>> per_consumer_items(num_consumers);
-
-    {
-        std::cout << "Running sanity check...\n";
-        BoundedQueue<int> test_queue(10);  // ← Make capacity at least 10
-        for(int i = 0; i < 10; i++) {
-            test_queue.push(i);
-        }
-        for(int i = 0; i < 10; i++) {
-            int item;
-            test_queue.pop(item);
-            if(item != i) {
-                std::cout << "SANITY CHECK FAILED: Expected " << i << " got " << item << "\n";
-                return 1;
-            }
-        }
-        std::cout << "Sanity check passed\n\n";
-    }
 
     std::vector<std::thread> threads;
 

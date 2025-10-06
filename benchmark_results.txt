@@ -1,0 +1,18 @@
+=== BoundedQueue Benchmark Results ===
+
+Balanced Producers/Consumers:
+Producers    Consumers    Capacity     Duration(ms)    Throughput(items/s) 
+--------------------------------------------------------------------------------
+1            1            50           24              4.16667e+06         
+2            2            50           70              2.85714e+06         
+4            4            50           261             1.53257e+06         
+8            8            50           680             1.17647e+06         
+
+Varying Queue Capacity (5 producers, 5 consumers):
+Capacity     Throughput(items/s) 
+----------------------------------------
+5            364166              
+10           533618              
+50           1.2987e+06          
+100          1.66113e+06         
+500          2.20264e+06         
